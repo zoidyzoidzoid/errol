@@ -11,7 +11,7 @@
 //     let model: [object Object] = serde_json::from_str(&json).unwrap();
 // }
 #[derive(Debug, Serialize, Deserialize)]
-pub struct GitLabPush {
+pub struct GitlabPush {
     object_kind: String,
     before: String,
     after: String,

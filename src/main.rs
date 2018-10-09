@@ -15,7 +15,7 @@ extern crate rocket_contrib;
 use rocket_contrib::Json;
 
 mod gitlab;
-use gitlab::models::GitLabPush;
+use gitlab::models::GitlabPush;
 
 struct Event {
     event_type: String,
@@ -40,7 +40,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for Event {
 }
 
 #[post("/gitlab", format="application/json", data="<push>")]
-fn gitlab_push(event: Event, push: Json<GitLabPush>) -> String {
+fn gitlab_push(event: Event, push: Json<GitlabPush>) -> String {
     if event.event_type != "Push Hook" {
         return "Invalid Request".to_string();
     }
