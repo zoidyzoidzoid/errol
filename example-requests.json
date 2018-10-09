@@ -1,4 +1,5 @@
-{
+[
+  {
   "object_kind": "push",
   "event_name": "push",
   "before": "0000000000000000000000000000000000000000",
@@ -57,7 +58,7 @@
     "git_ssh_url": "git@gitlab.com:zoidbergwill/zoid-test-project.git",
     "visibility_level": 20
   }
-}
+},
 {
   "object_kind": "push",
   "event_name": "push",
@@ -117,7 +118,7 @@
     "git_ssh_url": "git@gitlab.com:zoidbergwill/zoid-test-project.git",
     "visibility_level": 20
   }
-}
+},
 {
   "object_kind": "push",
   "event_name": "push",
@@ -177,7 +178,7 @@
     "git_ssh_url": "git@gitlab.com:zoidbergwill/zoid-test-project.git",
     "visibility_level": 20
   }
-}
+},
 {
   "object_kind": "push",
   "event_name": "push",
@@ -221,7 +222,7 @@
     "git_ssh_url": "git@gitlab.com:zoidbergwill/zoid-test-project.git",
     "visibility_level": 20
   }
-}
+},
 {
   "object_kind": "push",
   "event_name": "push",
@@ -281,7 +282,7 @@
     "git_ssh_url": "git@gitlab.com:zoidbergwill/zoid-test-project.git",
     "visibility_level": 20
   }
-}
+},
 {
   "object_kind": "push",
   "event_name": "push",
@@ -356,7 +357,7 @@
     "git_ssh_url": "git@gitlab.com:zoidbergwill/zoid-test-project.git",
     "visibility_level": 20
   }
-}
+},
 {
   "object_kind": "push",
   "event_name": "push",
@@ -400,4 +401,4 @@
     "git_ssh_url": "git@gitlab.com:zoidbergwill/zoid-test-project.git",
     "visibility_level": 20
   }
-}
+}]
