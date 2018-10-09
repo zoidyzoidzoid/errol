@@ -10,6 +10,11 @@
 //     let json = r#"{"answer": 42}"#;
 //     let model: [object Object] = serde_json::from_str(&json).unwrap();
 // }
+//
+// Thanks quicktype.io
+//
+// TODO(zoidbergwill): Trim some of these fields, since we only need some of them.
+// https://github.com/serde-rs/serde/pull/201
 #[derive(Debug, Serialize, Deserialize)]
 pub struct GitlabPush {
     object_kind: String,
