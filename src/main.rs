@@ -45,8 +45,19 @@ fn gitlab_push(event: Event, push: Json<GitlabPush>) -> String {
         return "Invalid Request".to_string();
     }
 
-    println!("{:?}", push);
+    println!("Received push: {:?}", push);
+    process_gitlab_event(push);
     "Hello, World!".to_string()
+}
+
+fn process_gitlab_event(push: Json<GitlabPush>) {
+    if push.total_commits_count > 20 {
+        // We'll support this later
+        println!("Ignoring push, because too many commits: {}", push.total_commits_count)
+    }
+    for commit in push.commits.iter() {
+       println!("Found commit {}: {}", commit.id, commit.message) 
+    }
 }
 
 fn main() {
