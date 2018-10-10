@@ -1,12 +1,19 @@
 # Git Multimail Webhooks
+
+Project Layout
+https://doc.rust-lang.org/cargo/reference/manifest.html#the-project-layout
+
+Web Framework
+https://rocket.rs/
+
+Sending E-mails
+https://github.com/lettre/lettre
+
+Events from Gitlab
 https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#push-events
 
-https://gitlab.booking.com/admin/hooks
-https://docs.gitlab.com/ee/user/project/integrations/emails_on_push.html
+Talking to Gitlab
 https://gitlab.kitware.com/utils/rust-gitlab
-
-https://doc.rust-lang.org/cargo/reference/manifest.html#the-project-layout
-https://rocket.rs/
 
 # Summary
 
@@ -32,8 +39,14 @@ The section should return to the examples given in the previous section, and exp
 
 # Prior art
 
+General Git
 post-receive-email in git
 git-multimail/git-multimail (also part of git/contrib)
+
+GitHub Related
 mention-bot
 
+https://docs.gitlab.com/ee/user/project/integrations/emails_on_push.html
+
 # Unresolved questions
+
