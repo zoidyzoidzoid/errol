@@ -48,5 +48,9 @@ mention-bot
 
 https://docs.gitlab.com/ee/user/project/integrations/emails_on_push.html
 
+Other semi-related stuff
+https://help.github.com/articles/about-codeowners/
+https://docs.gitlab.com/ee/user/project/code_owners.html
+
 # Unresolved questions
 
