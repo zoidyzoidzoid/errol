@@ -1,0 +1,30 @@
+rules:
+- paths:
+  - "*"
+  to:
+  - @global-owner1
+  - @global-owner2
+- paths:
+  - "*.js"
+  to:
+  - @js-owner
+- paths:
+  - "*.go"
+  to:
+  - docs@example.com
+- paths:
+  - /build/logs/
+  to:
+  - @doctocat
+- paths:
+  - docs/*
+  to:
+  - docs@example.com
+- paths:
+  - apps/
+  to:
+  - @octocat
+- paths:
+  - /docs/
+  to:
+  - @doctocat
