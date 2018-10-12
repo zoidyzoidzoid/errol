@@ -45,6 +45,7 @@ git-multimail/git-multimail (also part of git/contrib)
 
 GitHub Related
 mention-bot
+https://github.com/facebookarchive/mention-bot
 
 https://docs.gitlab.com/ee/user/project/integrations/emails_on_push.html
 
