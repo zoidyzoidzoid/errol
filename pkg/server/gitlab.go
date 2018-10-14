@@ -21,21 +21,21 @@ func (r *GitlabPushEvent) Marshal() ([]byte, error) {
 
 // GitlabPushEvent should have a comment
 type GitlabPushEvent struct {
-	ObjectKind        string     `json:"object_kind"`
-	Before            string     `json:"before"`
-	After             string     `json:"after"`
-	Ref               string     `json:"ref"`
-	CheckoutSHA       string     `json:"checkout_sha"`
-	UserID            int64      `json:"user_id"`
-	UserName          string     `json:"user_name"`
-	UserUsername      string     `json:"user_username"`
-	UserEmail         string     `json:"user_email"`
-	UserAvatar        string     `json:"user_avatar"`
-	ProjectID         int64      `json:"project_id"`
-	Project           Project    `json:"project"`
-	Repository        Repository `json:"repository"`
-	Commits           []Commit   `json:"commits"`
-	TotalCommitsCount int64      `json:"total_commits_count"`
+	ObjectKind        string           `json:"object_kind"`
+	Before            string           `json:"before"`
+	After             string           `json:"after"`
+	Ref               string           `json:"ref"`
+	CheckoutSHA       string           `json:"checkout_sha"`
+	UserID            int64            `json:"user_id"`
+	UserName          string           `json:"user_name"`
+	UserUsername      string           `json:"user_username"`
+	UserEmail         string           `json:"user_email"`
+	UserAvatar        string           `json:"user_avatar"`
+	ProjectID         int64            `json:"project_id"`
+	Project           Project          `json:"project"`
+	Repository        GitlabRepository `json:"repository"`
+	Commits           []Commit         `json:"commits"`
+	TotalCommitsCount int64            `json:"total_commits_count"`
 }
 
 // Commit should have a comment
@@ -75,8 +75,8 @@ type Project struct {
 	HTTPURL           string      `json:"http_url"`
 }
 
-// Repository should have a comment
-type Repository struct {
+// GitlabRepository should have a comment
+type GitlabRepository struct {
 	Name            string `json:"name"`
 	URL             string `json:"url"`
 	Description     string `json:"description"`

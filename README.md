@@ -6,7 +6,8 @@
 [net/smtp's Sendmail](https://golang.org/pkg/net/smtp/#SendMail)
 [Mailgun client](https://github.com/mailgun/mailgun-go)
 
-[Push Events](https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#push-events)
+[Gitlab Push Events](https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#push-events)
+[GitHub Push Events](https://developer.github.com/v3/activity/events/types/#pushevent)
 
 [go-gitlab](https://github.com/xanzy/go-gitlab)
 
