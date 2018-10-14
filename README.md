@@ -1,58 +1,56 @@
 # Git Multimail Webhooks
 
-Project Layout
-https://doc.rust-lang.org/cargo/reference/manifest.html#the-project-layout
+[Style guideline for Go packages - rakyll](https://rakyll.org/style-packages/)
+[Standard Go Project Layout](https://github.com/golang-standards/project-layout)
 
-Web Framework
-https://rocket.rs/
+[net/smtp's Sendmail](https://golang.org/pkg/net/smtp/#SendMail)
+[Mailgun client](https://github.com/mailgun/mailgun-go)
 
-Sending E-mails
-https://github.com/lettre/lettre
+[Push Events](https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#push-events)
 
-Events from Gitlab
-https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#push-events
+[go-gitlab](https://github.com/xanzy/go-gitlab)
 
-Talking to Gitlab
-https://gitlab.kitware.com/utils/rust-gitlab
-
-# Summary
+## Summary
 
 One paragraph explanation of the feature.
 
-# Motivation
+## Motivation
 
 Why are we doing this? What use cases does it support? What is the expected outcome?
 
-# Guide-level explanation
+## Guide-level explanation
 
 For implementation-oriented RFCs (e.g. for compiler internals), this section should focus on how compiler contributors should think about the change, and give examples of its concrete impact. For policy RFCs, this section should provide an example-driven introduction to the policy, and explain its impact in concrete terms.
 
-# Reference-level explanation
+## Reference-level explanation
 
 This is the technical portion of the RFC. Explain the design in sufficient detail that:
 
 The section should return to the examples given in the previous section, and explain more fully how the detailed proposal makes those examples work.
 
-# Drawbacks
+## Drawbacks
 
-# Rationale and alternatives
+## Rationale and alternatives
 
-# Prior art
+## Prior art
 
-General Git
-post-receive-email in git
-git-multimail/git-multimail (also part of git/contrib)
+Git bundles a few options for e-mailing people whenever a push happens to repo, e.g.:
+[post-receive-email](https://github.com/git/git/blob/master/contrib/hooks/post-receive-email) in git
+[git-multimail](https://github.com/git-multimail/git-multimail) (also part of [git/contrib](https://github.com/git/git/blob/master/contrib/hooks/multimail/git_multimail.py))
 
 GitHub Related
-mention-bot
-https://github.com/facebookarchive/mention-bot
+Facebook's [mention-bot](https://github.com/facebookarchive/mention-bot)
+Mention bot mentions potential reviewers on pull requests, using git-blame information, and configuration.
 
-https://docs.gitlab.com/ee/user/project/integrations/emails_on_push.html
+Gitlab Related
+Gitlab's [Email on Push](https://docs.gitlab.com/ee/user/project/integrations/emails_on_push.html) sends you a push for
+every commit to a repo.
+
+[Herald](https://secure.phabricator.com/book/phabricator/article/herald/)
+[HeraldAdapter.php](https://sourcegraph.com/github.com/phacility/phabricator@master/-/blob/src/applications/herald/adapter/HeraldAdapter.php)
 
 Other semi-related stuff
-https://help.github.com/articles/about-codeowners/
-https://docs.gitlab.com/ee/user/project/code_owners.html
-https://secure.phabricator.com/book/phabricator/article/herald/
+[GitHub CODEOWNERS](https://help.github.com/articles/about-codeowners/)
+[Gitlab CODEOWNERS](https://docs.gitlab.com/ee/user/project/code_owners.html)
 
-# Unresolved questions
-
+## Unresolved questions
