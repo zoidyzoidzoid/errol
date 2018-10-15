@@ -19,8 +19,23 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	_ "net/http/pprof"
 	"strings"
 	"time"
+
+	"go.opencensus.io/plugin/ochttp"
+)
+
+const (
+	GITHUB_PROVIDER_NAME    = "github"
+	GITHUB_EVENT_HEADER     = "X-Github-Event"
+	GITHUB_PUSH_EVENT_VALUE = "Push Hook"
+
+	GITLAB_PROVIDER_NAME    = "github"
+	GITLAB_EVENT_HEADER     = "X-Gitlab-Event"
+	GITLAB_PUSH_EVENT_VALUE = "push"
+
+	EVENT_TYPE_PUSH = "push"
 )
 
 func handleGitlabEvent(push GitlabPushEvent) {
@@ -34,8 +49,9 @@ func handleGitlabEvent(push GitlabPushEvent) {
 }
 
 func loadGitlabEvent(w http.ResponseWriter, eventType string, body []byte) {
-	if eventType == "push" {
-
+	if eventType != EVENT_TYPE_PUSH {
+		fmt.Fprintf(w, "GitHub event received, but unkown type: %s", eventType)
+		return
 	}
 	push, err := UnmarshalGitlabPushEvent(body)
 	if err != nil {
@@ -60,8 +76,9 @@ func handleGitHubEvent(push GitHubPushEvent) {
 }
 
 func loadGitHubEvent(w http.ResponseWriter, eventType string, body []byte) {
-	if eventType != "push" {
+	if eventType != EVENT_TYPE_PUSH {
 		fmt.Fprintf(w, "GitHub event received, but unkown type: %s", eventType)
+		return
 	}
 	push, err := UnmarshalGitHubPushEvent(body)
 	if err != nil {
@@ -75,23 +92,19 @@ func loadGitHubEvent(w http.ResponseWriter, eventType string, body []byte) {
 	fmt.Fprintf(w, "GitHub push received!")
 }
 
-func indexHandler(w http.ResponseWriter, req *http.Request) {
+type gitlabHandler func(http.ResponseWriter, *http.Request)
+
+func (f ggitlabHandleritlab) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var err error
-	var eventProvider string
-	eventType := "push"
-	if req.Header["X-Gitlab-Event"] != nil && req.Header["X-Gitlab-Event"][0] == "Push Hook" {
-		fmt.Println("Gitlab push received!")
-		eventProvider = "Gitlab"
-	} else if req.Header["X-GitHub-Event"] != nil && req.Header["X-Gitlab-Event"][0] == "push" {
-		fmt.Println("GitHub push received!")
-		eventProvider = "GitHub"
-	} else {
+	if req.Header[GITLAB_EVENT_HEADER] == nil || req.Header[GITLAB_EVENT_HEADER][0] != GITLAB_PUSH_EVENT_VALUE {
 		_, err := fmt.Fprintf(w, "Invalid Push!")
 		if err != nil {
 			log.Print("Error writing response")
 		}
 		return
 	}
+	fmt.Println("GitHub push received!")
+	eventType := EVENT_TYPE_PUSH
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		_, writeErr := fmt.Fprintf(w, "Error reading response body.")
@@ -100,16 +113,40 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		}
 		return
 	}
-	if eventProvider == "Gitlab" {
-		loadGitlabEvent(w, eventType, body)
-	} else if eventProvider == "GitHub" {
-		loadGitHubEvent(w, eventType, body)
+	loadGitHubEvent(w, eventType, body)
+}
+
+type githubHandler func(http.ResponseWriter, *http.Request)
+
+func (f githubHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	var err error
+	if req.Header[GITHUB_EVENT_HEADER] == nil || req.Header[GITHUB_EVENT_HEADER][0] != GITHUB_PUSH_EVENT_VALUE {
+		_, err = fmt.Fprintf(w, "Invalid Push!")
+		if err != nil {
+			log.Print("Error writing response")
+		}
+		return
 	}
+	fmt.Println("GitHub push received!")
+	eventType := EVENT_TYPE_PUSH
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		_, writeErr := fmt.Fprintf(w, "Error reading response body.")
+		if writeErr != nil {
+			log.Print("Error writing response on error reading body")
+		}
+		return
+	}
+	loadGitHubEvent(w, eventType, body)
 }
 
 // Run should have a comment
 func Run() {
-	http.HandleFunc("/", indexHandler)
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+	http.Handle("/api/v1/hooks/github", ochttp.WithRouteTag(githubHandler{}, "/api/v1/hooks/github"))
+	http.Handle("/api/v1/hooks/gitlab", ochttp.WithRouteTag(gitlabHandler{}, "/api/v1/hooks/gitlab"))
 	srv := &http.Server{
 		Addr:         ":8080",
 		ReadTimeout:  5 * time.Second,
