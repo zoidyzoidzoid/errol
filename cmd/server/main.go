@@ -1,6 +1,6 @@
 package main
 
-import "github.com/zoidbergwill/git-multimail-webhook/pkg/server"
+import "github.com/zoidbergwill/errol/pkg/server"
 
 func main() {
 	server.Run()
