@@ -5,7 +5,14 @@
 
 package server
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"strings"
+)
 
 // UnmarshalGitlabPushEvent should have a comment
 func UnmarshalGitlabPushEvent(data []byte) (GitlabPushEvent, error) {
@@ -84,4 +91,58 @@ type GitlabRepository struct {
 	GitHTTPURL      string `json:"git_http_url"`
 	GitSSHURL       string `json:"git_ssh_url"`
 	VisibilityLevel int64  `json:"visibility_level"`
+}
+
+func handleGitlabEvent(push GitlabPushEvent) {
+	for _, commit := range push.Commits {
+		_, err := fmt.Printf("%s: %s\n", commit.ID, strings.Split(commit.Message, "\n")[0])
+		if err != nil {
+			log.Print("Error printing commit data")
+		}
+	}
+	fmt.Println("Gitlab push received!")
+}
+
+func loadGitlabEvent(w http.ResponseWriter, eventType string, body []byte) {
+	if eventType != EventTypePush {
+		fmt.Fprintf(w, "GitHub event received, but unknown type: %s", eventType)
+		return
+	}
+	push, err := UnmarshalGitlabPushEvent(body)
+	if err != nil {
+		_, writeErr := fmt.Fprintf(w, "Error reading event.")
+		if writeErr != nil {
+			log.Print("Error writing response on unmarshalling event")
+		}
+		return
+	}
+	handleGitlabEvent(push)
+	fmt.Fprintf(w, "Gitlab push received!")
+}
+
+type GitlabHandler struct {
+	token string
+}
+
+func (f GitlabHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	var err error
+	if req.Header[GitlabEventHeader] == nil || req.Header[GitlabEventHeader][0] != GitlabEventHookPushValue {
+		fmt.Printf("Invalid event received on Gitlab endpoint")
+		_, err := fmt.Fprintf(w, "Invalid Gitlab push!")
+		if err != nil {
+			log.Print("Error writing response")
+		}
+		return
+	}
+	fmt.Println("GitHub push received!")
+	eventType := EventTypePush
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		_, writeErr := fmt.Fprintf(w, "Error reading response body.")
+		if writeErr != nil {
+			log.Print("Error writing response on error reading body")
+		}
+		return
+	}
+	loadGitlabEvent(w, eventType, body)
 }

@@ -5,7 +5,14 @@
 
 package server
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"strings"
+)
 
 func UnmarshalGitHubPushEvent(data []byte) (GitHubPushEvent, error) {
 	var r GitHubPushEvent
@@ -156,4 +163,60 @@ type GitHubSender struct {
 	ReceivedEventsURL string  `json:"received_events_url"`
 	Type              string  `json:"type"`
 	SiteAdmin         bool    `json:"site_admin"`
+}
+
+func handleGitHubEvent(push GitHubPushEvent) {
+	fmt.Printf("Received push: %s %s...%s", push.BaseRef, push.Before, push.After)
+	for _, commit := range push.Commits {
+		_, err := fmt.Printf("%s: %s\n", commit.ID, strings.Split(commit.Message, "\n")[0])
+		if err != nil {
+			log.Print("Error printing commit data")
+		}
+	}
+	fmt.Println("Gitlab push received!")
+}
+
+func loadGitHubEvent(w http.ResponseWriter, eventType string, body []byte) {
+	if eventType != EventTypePush {
+		fmt.Fprintf(w, "GitHub event received, but unknown type: %s", eventType)
+		return
+	}
+	push, err := UnmarshalGitHubPushEvent(body)
+	if err != nil {
+		_, writeErr := fmt.Fprintf(w, "Error reading event.")
+		if writeErr != nil {
+			log.Print("Error writing response on unmarshalling event")
+		}
+		return
+	}
+	handleGitHubEvent(push)
+	fmt.Fprintf(w, "GitHub push received!")
+}
+
+type GitHubHandler struct {
+	token string
+}
+
+func (f GitHubHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	var err error
+	fmt.Printf("%+v", req.Header)
+	if req.Header[GitHubEventHeader] == nil || req.Header[GitHubEventHeader][0] != GitHubEventHookPushValue {
+		fmt.Printf("Invalid event received on GitHub endpoint")
+		_, err = fmt.Fprintf(w, "Invalid GitHub push")
+		if err != nil {
+			log.Print("Error writing response")
+		}
+		return
+	}
+	fmt.Println("GitHub push received!")
+	eventType := EventTypePush
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		_, writeErr := fmt.Fprintf(w, "Error reading response body.")
+		if writeErr != nil {
+			log.Print("Error writing response on error reading body")
+		}
+		return
+	}
+	loadGitHubEvent(w, eventType, body)
 }

@@ -16,137 +16,34 @@ package server
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
+
+	// pprof for profiling
 	_ "net/http/pprof"
-	"strings"
 	"time"
 
 	"go.opencensus.io/plugin/ochttp"
 )
 
 const (
-	GITHUB_PROVIDER_NAME    = "github"
-	GITHUB_EVENT_HEADER     = "X-Github-Event"
-	GITHUB_PUSH_EVENT_VALUE = "Push Hook"
+	GitHubProviderName       = "github"
+	GitHubEventHeader        = "X-Github-Event"
+	GitHubEventHookPushValue = "push"
 
-	GITLAB_PROVIDER_NAME    = "github"
-	GITLAB_EVENT_HEADER     = "X-Gitlab-Event"
-	GITLAB_PUSH_EVENT_VALUE = "push"
+	GitlabProviderName       = "gitlab"
+	GitlabEventHeader        = "X-Gitlab-Event"
+	GitlabEventHookPushValue = "Push Hook"
 
-	EVENT_TYPE_PUSH = "push"
+	EventTypePush = "push"
 )
-
-func handleGitlabEvent(push GitlabPushEvent) {
-	for _, commit := range push.Commits {
-		_, err := fmt.Printf("%s: %s\n", commit.ID, strings.Split(commit.Message, "\n")[0])
-		if err != nil {
-			log.Print("Error printing commit data")
-		}
-	}
-	fmt.Println("Gitlab push received!")
-}
-
-func loadGitlabEvent(w http.ResponseWriter, eventType string, body []byte) {
-	if eventType != EVENT_TYPE_PUSH {
-		fmt.Fprintf(w, "GitHub event received, but unkown type: %s", eventType)
-		return
-	}
-	push, err := UnmarshalGitlabPushEvent(body)
-	if err != nil {
-		_, writeErr := fmt.Fprintf(w, "Error reading event.")
-		if writeErr != nil {
-			log.Print("Error writing response on unmarshalling event")
-		}
-		return
-	}
-	handleGitlabEvent(push)
-	fmt.Fprintf(w, "Gitlab push received!")
-}
-
-func handleGitHubEvent(push GitHubPushEvent) {
-	for _, commit := range push.Commits {
-		_, err := fmt.Printf("%s: %s\n", commit.ID, strings.Split(commit.Message, "\n")[0])
-		if err != nil {
-			log.Print("Error printing commit data")
-		}
-	}
-	fmt.Println("Gitlab push received!")
-}
-
-func loadGitHubEvent(w http.ResponseWriter, eventType string, body []byte) {
-	if eventType != EVENT_TYPE_PUSH {
-		fmt.Fprintf(w, "GitHub event received, but unkown type: %s", eventType)
-		return
-	}
-	push, err := UnmarshalGitHubPushEvent(body)
-	if err != nil {
-		_, writeErr := fmt.Fprintf(w, "Error reading event.")
-		if writeErr != nil {
-			log.Print("Error writing response on unmarshalling event")
-		}
-		return
-	}
-	handleGitHubEvent(push)
-	fmt.Fprintf(w, "GitHub push received!")
-}
-
-type gitlabHandler func(http.ResponseWriter, *http.Request)
-
-func (f ggitlabHandleritlab) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	var err error
-	if req.Header[GITLAB_EVENT_HEADER] == nil || req.Header[GITLAB_EVENT_HEADER][0] != GITLAB_PUSH_EVENT_VALUE {
-		_, err := fmt.Fprintf(w, "Invalid Push!")
-		if err != nil {
-			log.Print("Error writing response")
-		}
-		return
-	}
-	fmt.Println("GitHub push received!")
-	eventType := EVENT_TYPE_PUSH
-	body, err := ioutil.ReadAll(req.Body)
-	if err != nil {
-		_, writeErr := fmt.Fprintf(w, "Error reading response body.")
-		if writeErr != nil {
-			log.Print("Error writing response on error reading body")
-		}
-		return
-	}
-	loadGitHubEvent(w, eventType, body)
-}
-
-type githubHandler func(http.ResponseWriter, *http.Request)
-
-func (f githubHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	var err error
-	if req.Header[GITHUB_EVENT_HEADER] == nil || req.Header[GITHUB_EVENT_HEADER][0] != GITHUB_PUSH_EVENT_VALUE {
-		_, err = fmt.Fprintf(w, "Invalid Push!")
-		if err != nil {
-			log.Print("Error writing response")
-		}
-		return
-	}
-	fmt.Println("GitHub push received!")
-	eventType := EVENT_TYPE_PUSH
-	body, err := ioutil.ReadAll(req.Body)
-	if err != nil {
-		_, writeErr := fmt.Fprintf(w, "Error reading response body.")
-		if writeErr != nil {
-			log.Print("Error writing response on error reading body")
-		}
-		return
-	}
-	loadGitHubEvent(w, eventType, body)
-}
 
 // Run should have a comment
 func Run() {
-	go func() {
-		log.Println(http.ListenAndServe("localhost:6060", nil))
-	}()
-	http.Handle("/api/v1/hooks/github", ochttp.WithRouteTag(githubHandler{}, "/api/v1/hooks/github"))
-	http.Handle("/api/v1/hooks/gitlab", ochttp.WithRouteTag(gitlabHandler{}, "/api/v1/hooks/gitlab"))
+	gitHubHandler := GitHubHandler{}
+	gitlabHandler := GitlabHandler{}
+	http.Handle("/api/v1/hooks/github", ochttp.WithRouteTag(gitHubHandler, "/api/v1/hooks/github"))
+	http.Handle("/api/v1/hooks/gitlab", ochttp.WithRouteTag(gitlabHandler, "/api/v1/hooks/gitlab"))
 	srv := &http.Server{
 		Addr:         ":8080",
 		ReadTimeout:  5 * time.Second,
