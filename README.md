@@ -4,16 +4,15 @@
 
 - [Errol - Pottermore](https://www.pottermore.com/explore-the-story/errol)
 
-[Style guideline for Go packages - rakyll](https://rakyll.org/style-packages/)
-[Standard Go Project Layout](https://github.com/golang-standards/project-layout)
-
-[net/smtp's Sendmail](https://golang.org/pkg/net/smtp/#SendMail)
-[Mailgun client](https://github.com/mailgun/mailgun-go)
-
-[Gitlab Push Events](https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#push-events)
 [GitHub Push Events](https://developer.github.com/v3/activity/events/types/#pushevent)
+[Gitlab Push Events](https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#push-events)
 
-[go-gitlab](https://github.com/xanzy/go-gitlab)
+[Diesel ORM](http://diesel.rs/guides/getting-started/)
+[Rust Project Layout](https://doc.rust-lang.org/cargo/reference/manifest.html#the-project-layout)
+[Rocket Web Framework](https://rocket.rs/)
+[Lettre: For Sending E-mails](https://github.com/lettre/lettre)
+[Gitlab Rust Client](https://gitlab.kitware.com/utils/rust-gitlab)
+[GitHub Rust Client](https://github.com/mgattozzi/github-rs)
 
 ## Summary
 
