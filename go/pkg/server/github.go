@@ -172,6 +172,8 @@ func handleGitHubEvent(push GitHubPushEvent) {
 		if err != nil {
 			log.Print("Error printing commit data")
 		}
+		paths := append(commit.Modified, commit.Added...)
+		paths = append(paths, commit.Removed...)
 	}
 	fmt.Println("Gitlab push received!")
 }
