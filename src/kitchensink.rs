@@ -1,6 +1,7 @@
 extern crate actix_web;
-use self::actix_web::{App, Error, HttpRequest, HttpResponse, error, server};
-#[allow(unused_imports)] use self::actix_web::{AsyncResponder, HttpMessage};
+use self::actix_web::{error, server, App, Error, HttpRequest, HttpResponse};
+#[allow(unused_imports)]
+use self::actix_web::{AsyncResponder, HttpMessage};
 extern crate futures;
 use self::futures::future;
 use self::futures::Future;
