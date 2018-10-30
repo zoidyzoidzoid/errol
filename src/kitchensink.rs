@@ -29,8 +29,14 @@ use gitlab::GitlabPush;
 //     event_type: EventType,
 // }
 
-fn github_push(request: &HttpRequest) -> Box<Future<Item = HttpResponse, Error = Error>> {
-    let event_type = request
+fn github_push(req: &HttpRequest) -> Box<Future<Item = HttpResponse, Error = Error>> {
+    let content_type = req.headers().get(http::header::CONTENT_TYPE).unwrap().to_str().unwrap();
+    if content_type != "application/json" {
+        return Box::new(future::err(error::ErrorBadRequest(
+            "Incorrect content-type",
+        )));
+    }
+    let event_type = req
         .headers()
         .get("X-GitHub-Event")
         .unwrap()
@@ -41,7 +47,7 @@ fn github_push(request: &HttpRequest) -> Box<Future<Item = HttpResponse, Error =
         // },
         // "pull_request" => {
         // },
-        "push" => request
+        "push" => req
             .json()
             .from_err()
             .and_then(|push: GitHubPushEvent| {
@@ -55,15 +61,21 @@ fn github_push(request: &HttpRequest) -> Box<Future<Item = HttpResponse, Error =
     }
 }
 
-fn gitlab_push(request: &HttpRequest) -> Box<Future<Item = HttpResponse, Error = Error>> {
-    let event_type = request
+fn gitlab_push(req: &HttpRequest) -> Box<Future<Item = HttpResponse, Error = Error>> {
+    let content_type = req.headers().get(http::header::CONTENT_TYPE).unwrap().to_str().unwrap();
+    if content_type != "application/json" {
+        return Box::new(future::err(error::ErrorBadRequest(
+            "Incorrect content-type",
+        )));
+    }
+    let event_type = req
         .headers()
         .get("X-Gitlab-Event")
         .unwrap()
         .to_str()
         .unwrap();
     match event_type {
-        "Push Hook" => request
+        "Push Hook" => req
             .json()
             .from_err()
             .and_then(|push: GitlabPush| {
@@ -109,8 +121,13 @@ fn process_gitlab_push(push: GitlabPush) {
     }
 }
 
-fn index(_request: &HttpRequest) -> &'static str {
-    "Hello, World!"
+fn index(req: &HttpRequest) -> HttpResponse {
+    if let Some(hdr) = req.headers().get(http::header::CONTENT_TYPE) {
+        if let Ok(_s) = hdr.to_str() {
+            return HttpResponse::Ok().into()
+        }
+     }
+    HttpResponse::BadRequest().into()
 }
 
 pub fn launch_server() {
@@ -124,4 +141,38 @@ pub fn launch_server() {
     }).bind(addr)
     .expect("Can not bind to port 8080")
     .run();
+}
+
+// #[cfg(test)]
+// #[macro_use]
+// extern crate quickcheck;
+// #[cfg(test)]
+// mod tests {
+//   quickcheck! {
+//       fn prop(xs: Vec<u32>) -> bool {
+//           xs == reverse(&reverse(&xs))
+//       }
+//   }
+// }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use self::actix_web::test as actix_web_test;
+
+    #[test]
+    fn test_index_success() {
+        let resp = actix_web_test::TestRequest::with_header("content-type", "text/plain")
+            .run(&index)
+            .unwrap();
+        assert_eq!(resp.status(), http::StatusCode::OK);
+    }
+
+    #[test]
+    fn test_index_bad_request() {
+        let resp = actix_web_test::TestRequest::default()
+            .run(&index)
+            .unwrap();
+        assert_eq!(resp.status(), http::StatusCode::BAD_REQUEST);
+    }
 }

@@ -6,10 +6,8 @@ authors = [
 ]
 
 [dependencies]
+# cookie = ""
 # github-rs = ""
-# rocket = ""
-# rocket_codegen = ""
-# rocket_contrib = ""
 actix-web = ""
 diesel = { version = "", features = ["postgres"] }
 dotenv = ""
@@ -24,4 +22,7 @@ serde_yaml = ""
 failure = ""
 futures = ""
 http = ""
+quickcheck = ""
+# reqwest = ""
+hubcaps = "0.5.0"
 # syntect = ""
