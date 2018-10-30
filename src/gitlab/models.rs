@@ -15,6 +15,8 @@
 //
 // TODO(zoidbergwill): Trim some of these fields, since we only need some of them.
 // https://github.com/serde-rs/serde/pull/201
+extern crate serde_json;
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct GitlabPush {
     pub object_kind: String,

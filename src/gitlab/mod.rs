@@ -1,2 +1,2 @@
-pub use self::models::GitlabPush;
-pub mod models;
+pub use gitlab::models::*;
+mod models;

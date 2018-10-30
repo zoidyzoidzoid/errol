@@ -10,7 +10,8 @@
 //     let json = r#"{"answer": 42}"#;
 //     let model: [object Object] = serde_json::from_str(&json).unwrap();
 // }
-
+// TODO(zoidbergwill): Trim some of these fields, since we only need some of them.
+// https://github.com/serde-rs/serde/pull/201
 extern crate serde_json;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -172,8 +173,7 @@ pub struct GitHubIssuesEvent {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct Changes {
-}
+pub struct Changes {}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Issue {
