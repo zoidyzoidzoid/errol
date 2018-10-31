@@ -2,6 +2,10 @@ extern crate actix_web;
 use self::actix_web::{error, server, App, Error, HttpRequest, HttpResponse};
 #[allow(unused_imports)]
 use self::actix_web::{AsyncResponder, HttpMessage};
+
+extern crate env_logger;
+use self::actix_web::middleware::Logger;
+
 extern crate futures;
 use self::futures::future;
 use self::futures::Future;
@@ -51,7 +55,7 @@ fn github_push(req: &HttpRequest) -> Box<Future<Item = HttpResponse, Error = Err
             .json()
             .from_err()
             .and_then(|push: GitHubPushEvent| {
-                println!("Received push: {:?}", push);
+                println!("Received push to {:?} at {:?}", push.repository.full_name, push.git_hub_push_event_ref);
                 process_github_push(push);
                 Ok(HttpResponse::Ok().json("GitHub hook received!"))
             }).responder(),
@@ -79,7 +83,8 @@ fn gitlab_push(req: &HttpRequest) -> Box<Future<Item = HttpResponse, Error = Err
             .json()
             .from_err()
             .and_then(|push: GitlabPush| {
-                println!("Received push: {:?}", push);
+                println!("Received push to {:?} at {:?}", push.project.path_with_namespace, push.git_lab_push_ref);
+                // println!("Received push: {:?}", push);
                 process_gitlab_push(push);
                 Ok(HttpResponse::Ok().json("Gitlab hook received!"))
             }).responder(),
@@ -90,6 +95,7 @@ fn gitlab_push(req: &HttpRequest) -> Box<Future<Item = HttpResponse, Error = Err
 }
 
 fn process_github_push(push: GitHubPushEvent) {
+    // println!("{}", serde_json::to_string(&push).unwrap());
     if push.commits.len() >= 20 {
         // We'll support this later. GitHub and Gitlab both don't include more
         // than 20 commits in a push event.
@@ -107,6 +113,7 @@ fn process_github_push(push: GitHubPushEvent) {
 }
 
 fn process_gitlab_push(push: GitlabPush) {
+    // println!("{}", serde_json::to_string(&push).unwrap());
     if push.total_commits_count > 20 {
         // We'll support this later. GitHub and Gitlab both don't include more
         // than 20 commits in a push event.
@@ -131,10 +138,15 @@ fn index(req: &HttpRequest) -> HttpResponse {
 }
 
 pub fn launch_server() {
+    std::env::set_var("RUST_LOG", "actix_web=info");
+    env_logger::init();
+
     let addr = "127.0.0.1:8080";
     println!("Starting Errol server on http://{}", addr);
+
     server::new(|| {
         App::new()
+            .middleware(Logger::default())
             .resource("/", |r| r.f(index))
             .resource("/api/v1/hooks/github", |r| r.f(github_push))
             .resource("/api/v1/hooks/gitlab", |r| r.f(gitlab_push))
