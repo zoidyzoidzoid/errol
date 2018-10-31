@@ -5,14 +5,38 @@
 - [Errol - Pottermore](https://www.pottermore.com/explore-the-story/errol)
 
 [GitHub Push Events](https://developer.github.com/v3/activity/events/types/#pushevent)
+
 [Gitlab Push Events](https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#push-events)
 
 [Diesel ORM](http://diesel.rs/guides/getting-started/)
+
 [Rust Project Layout](https://doc.rust-lang.org/cargo/reference/manifest.html#the-project-layout)
+
 [Rocket Web Framework](https://rocket.rs/)
+
 [Lettre: For Sending E-mails](https://github.com/lettre/lettre)
+
 [Gitlab Rust Client](https://gitlab.kitware.com/utils/rust-gitlab)
+
 [GitHub Rust Client](https://github.com/mgattozzi/github-rs)
+
+# WARNING: START
+
+This project is very very pre-alpha, and very much a Work in Progress.
+It isn't in working state yet. 
+
+Please feel to create an issue if you have any questions, suggestions,
+or anything.
+
+I'm very new to Rust, so I'd be happy to hear any input on code, the
+architecture, or anything else related to the design of the project.
+
+The TL;DR similar to the summary is that I want to build something like
+[Herald](herald) and [mention-bot](mention-bot), that works on GitHub
+and Gitlab.
+
+# WARNING: FIN
+
 
 ## Summary
 
@@ -35,6 +59,7 @@ Some use cases we'd like to support would be:
   - every commit by a certain person
   - every commit that edits a certain file
   - every commit that edits a file that matches a regex
+  - every pull request labelled UX
 
 The expected short term outcome is being able to receive e-mails based on rules,
 and the longer term outcome is supporting things like mention-bot or other ways
