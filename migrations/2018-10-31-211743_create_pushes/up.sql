@@ -1,0 +1,129 @@
+-- Your SQL goes here
+
+CREATE TABLE github_repos (
+  id SERIAL PRIMARY KEY,
+  repo VARCHAR NOT NULL,
+  url TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  deleted_at TIMESTAMP
+);
+
+CREATE TABLE github_pulls (
+  github_repo_id INTEGER REFERENCES "github_repos" ("id") DEFERRABLE INITIALLY DEFERRED,
+  id SERIAL PRIMARY KEY,
+  number INTEGER NOT NULL,
+  title VARCHAR NOT NULL,
+  repo VARCHAR NOT NULL,
+  body TEXT NOT NULL,
+  labels TEXT NOT NULL,
+  url TEXT NOT NULL,
+  data TEXT NOT NULL,
+  created_at TIMESTAMP,
+  updated_at TIMESTAMP,
+  deleted_at TIMESTAMP
+);
+
+CREATE TABLE github_pull_fetches (
+  github_repo_id INTEGER REFERENCES "github_repos" ("id") DEFERRABLE INITIALLY DEFERRED,
+  id SERIAL PRIMARY KEY,
+  repo VARCHAR NOT NULL,
+  data TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  deleted_at TIMESTAMP
+);
+
+CREATE TABLE github_issues_fetches (
+  github_repo_id INTEGER REFERENCES "github_repos" ("id") DEFERRABLE INITIALLY DEFERRED,
+  id SERIAL PRIMARY KEY,
+  repo VARCHAR NOT NULL,
+  data TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  deleted_at TIMESTAMP
+);
+
+CREATE TABLE rules (
+  id INTEGER NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE paths (
+  id INTEGER NOT NULL,
+  value TEXT,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE rules_paths (
+  id INTEGER NOT NULL,
+  key_id INTEGER REFERENCES "paths" ("id") DEFERRABLE INITIALLY DEFERRED,
+  rule_id INTEGER REFERENCES "rules" ("id") DEFERRABLE INITIALLY DEFERRED,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE `to` (
+  id INTEGER NOT NULL,
+  value TEXT,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE rules_to (
+  id INTEGER NOT NULL,
+  key_id INTEGER REFERENCES "to" ("id") DEFERRABLE INITIALLY DEFERRED,
+  rule_id INTEGER REFERENCES "rules" ("id") DEFERRABLE INITIALLY DEFERRED,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE projects (
+  id INTEGER NOT NULL,
+  value TEXT,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE rules_projects (
+  id INTEGER NOT NULL,
+  key_id INTEGER REFERENCES "projects" ("id") DEFERRABLE INITIALLY DEFERRED,
+  rule_id INTEGER REFERENCES "rules" ("id") DEFERRABLE INITIALLY DEFERRED,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE authors (
+  id INTEGER NOT NULL,
+  value TEXT,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE rules_authors (
+  id INTEGER NOT NULL,
+  key_id INTEGER REFERENCES "authors" ("id") DEFERRABLE INITIALLY DEFERRED,
+  rule_id INTEGER REFERENCES "rules" ("id") DEFERRABLE INITIALLY DEFERRED,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE reply_to (
+  id INTEGER NOT NULL,
+  value TEXT,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE rules_reply_to (
+  id INTEGER NOT NULL,
+  key_id INTEGER REFERENCES "reply_to" ("id") DEFERRABLE INITIALLY DEFERRED,
+  rule_id INTEGER REFERENCES "rules" ("id") DEFERRABLE INITIALLY DEFERRED,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE branches (
+  id INTEGER NOT NULL,
+  value TEXT,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE rules_branches (
+  id INTEGER NOT NULL,
+  key_id INTEGER REFERENCES "branches" ("id") DEFERRABLE INITIALLY DEFERRED,
+  rule_id INTEGER REFERENCES "rules" ("id") DEFERRABLE INITIALLY DEFERRED,
+  PRIMARY KEY (id)
+);
+
