@@ -1,3 +1,6 @@
+**/*.rs.bk
+/TOKEN
+/data/
+/logfile
 /rust/target
 /target
-**/*.rs.bk
