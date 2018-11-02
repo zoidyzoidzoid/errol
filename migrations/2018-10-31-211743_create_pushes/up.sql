@@ -62,7 +62,7 @@ CREATE TABLE rules_paths (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE `to` (
+CREATE TABLE "to" (
   id INTEGER NOT NULL,
   value TEXT,
   PRIMARY KEY (id)
