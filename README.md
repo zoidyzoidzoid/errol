@@ -23,7 +23,7 @@
 # WARNING: START
 
 This project is very very pre-alpha, and very much a Work in Progress.
-It isn't in working state yet. 
+It isn't in working state yet.
 
 Please feel to create an issue if you have any questions, suggestions,
 or anything.
@@ -36,7 +36,6 @@ The TL;DR similar to the summary is that I want to build something like
 and Gitlab.
 
 # WARNING: FIN
-
 
 ## Summary
 
@@ -74,6 +73,8 @@ For implementation-oriented RFCs (e.g. for compiler internals), this section sho
 This is the technical portion of the RFC. Explain the design in sufficient detail that:
 
 The section should return to the examples given in the previous section, and explain more fully how the detailed proposal makes those examples work.
+
+![architecture](/static/architecture.png)
 
 ## Drawbacks
 
