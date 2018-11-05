@@ -1,7 +1,7 @@
 extern crate diesel;
 extern crate errol;
 
-use errol::models::GitHubIssue;
+use errol::models::GithubIssue;
 #[allow(unused_imports)] use diesel::prelude::*;
 use errol::*;
 
@@ -10,7 +10,7 @@ fn main() {
     let connection = establish_connection();
     let results = github_issues
         .limit(5)
-        .load::<GitHubIssue>(&connection)
+        .load::<GithubIssue>(&connection)
         .expect("Error loading GitHub issues");
 
     println!("Displaying {} GitHub issues", results.len());

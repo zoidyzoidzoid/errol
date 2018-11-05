@@ -161,6 +161,17 @@ fn index(state: State<AppState>, query: Query<HashMap<String, String>>) -> Resul
 //     HttpResponse::BadRequest().into()
 // }
 
+fn create_app() -> App<AppState> {
+    let tera =
+        compile_templates!(concat!(env!("CARGO_MANIFEST_DIR"), "/templates/**/*"));
+
+    App::with_state(AppState{template: tera})
+        .middleware(Logger::default())
+        .resource("/", |r| r.method(http::Method::GET).with(index))
+        .resource("/api/v1/hooks/github", |r| r.f(github_push))
+        .resource("/api/v1/hooks/gitlab", |r| r.f(gitlab_push))
+}
+
 pub fn launch_server() {
     std::env::set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
@@ -171,14 +182,7 @@ pub fn launch_server() {
     let addr = "127.0.0.1:8080";
 
     server::new(|| {
-        let tera =
-            compile_templates!(concat!(env!("CARGO_MANIFEST_DIR"), "/templates/**/*"));
-
-        App::with_state(AppState{template: tera})
-            .middleware(Logger::default())
-            .resource("/", |r| r.method(http::Method::GET).with(index))
-            .resource("/api/v1/hooks/github", |r| r.f(github_push))
-            .resource("/api/v1/hooks/gitlab", |r| r.f(gitlab_push))
+        create_app()
     }).bind(addr)
     .expect("Can not bind to port 8080")
     .start();
@@ -206,17 +210,23 @@ mod tests {
 
     #[test]
     fn test_index_success() {
-        let resp = actix_web_test::TestRequest::with_header("content-type", "text/plain")
-            .run(&index)
-            .unwrap();
-        assert_eq!(resp.status(), http::StatusCode::OK);
+        let mut srv = actix_web_test::TestServer::with_factory(create_app);
+
+        let request = srv.client(
+            http::Method::GET, "/").finish().unwrap();
+        let response = srv.execute(request.send()).unwrap();
+
+        assert!(response.status().is_success());
     }
 
     #[test]
     fn test_index_bad_request() {
-        let resp = actix_web_test::TestRequest::default()
-            .run(&index)
-            .unwrap();
-        assert_eq!(resp.status(), http::StatusCode::BAD_REQUEST);
+        let mut srv = actix_web_test::TestServer::with_factory(create_app);
+
+        let request = srv.client(
+            http::Method::GET, "/").finish().unwrap();
+        let response = srv.execute(request.send()).unwrap();
+
+        assert!(response.status().is_success());
     }
 }

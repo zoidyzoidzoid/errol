@@ -3,19 +3,23 @@ extern crate chrono;
 
 use self::chrono::NaiveDateTime;
 
-#[derive(Queryable,Debug)]
+use schema::{branches, github_issues_fetches, github_pulls_fetches, rules_branches};
+
+#[derive(Queryable, Debug)]
 pub struct Author {
     pub id: i32,
     pub value: Option<String>,
 }
 
-#[derive(Queryable,Debug)]
-pub struct Branche {
+#[derive(Queryable, Debug)]
+#[derive(Identifiable)]
+#[table_name = "branches"]
+pub struct Branch {
     pub id: i32,
     pub value: Option<String>,
 }
 
-#[derive(Queryable,Debug)]
+#[derive(Queryable, Debug)]
 pub struct GithubIssue {
     pub id: i32,
     pub number: i32,
@@ -25,8 +29,10 @@ pub struct GithubIssue {
     pub url: String,
 }
 
-#[derive(Queryable,Debug)]
-pub struct GithubIssuesFetche {
+#[derive(Queryable, Debug)]
+#[derive(Identifiable)]
+#[table_name = "github_issues_fetches"]
+pub struct GithubIssuesFetch {
     pub github_repo_id: Option<i32>,
     pub id: i32,
     pub repo: String,
@@ -36,8 +42,10 @@ pub struct GithubIssuesFetche {
     pub deleted_at: Option<NaiveDateTime>,
 }
 
-#[derive(Queryable,Debug)]
-pub struct GithubPullsFetche {
+#[derive(Queryable, Debug)]
+#[derive(Identifiable)]
+#[table_name = "github_pulls_fetches"]
+pub struct GithubPullsFetch {
     pub github_repo_id: Option<i32>,
     pub id: i32,
     pub repo: String,
@@ -47,7 +55,7 @@ pub struct GithubPullsFetche {
     pub deleted_at: Option<NaiveDateTime>,
 }
 
-#[derive(Queryable,Debug)]
+#[derive(Queryable, Debug)]
 pub struct GithubPull {
     pub github_repo_id: Option<i32>,
     pub id: i32,
@@ -63,7 +71,7 @@ pub struct GithubPull {
     pub deleted_at: Option<NaiveDateTime>,
 }
 
-#[derive(Queryable,Debug)]
+#[derive(Queryable, Debug)]
 pub struct GithubRepo {
     pub id: i32,
     pub repo: String,
@@ -73,74 +81,75 @@ pub struct GithubRepo {
     pub deleted_at: Option<NaiveDateTime>,
 }
 
-#[derive(Queryable,Debug)]
+#[derive(Queryable, Debug)]
 pub struct Path {
     pub id: i32,
     pub value: Option<String>,
 }
 
-#[derive(Queryable,Debug)]
+#[derive(Queryable, Debug)]
 pub struct Project {
     pub id: i32,
     pub value: Option<String>,
 }
 
-#[derive(Queryable,Debug)]
+#[derive(Queryable, Debug)]
 pub struct ReplyTo {
     pub id: i32,
     pub value: Option<String>,
 }
 
-#[derive(Queryable,Debug)]
+#[derive(Queryable, Debug)]
 pub struct Rule {
     pub id: i32,
 }
 
-#[derive(Queryable,Debug)]
+#[derive(Queryable, Debug)]
 pub struct RulesAuthor {
     pub id: i32,
     pub key_id: Option<i32>,
     pub rule_id: Option<i32>,
 }
 
-#[derive(Queryable,Debug)]
-pub struct RulesBranche {
+#[derive(Queryable, Debug)]
+#[derive(Identifiable)]
+#[table_name = "rules_branches"]
+pub struct RulesBranch {
     pub id: i32,
     pub key_id: Option<i32>,
     pub rule_id: Option<i32>,
 }
 
-#[derive(Queryable,Debug)]
+#[derive(Queryable, Debug)]
 pub struct RulesPath {
     pub id: i32,
     pub key_id: Option<i32>,
     pub rule_id: Option<i32>,
 }
 
-#[derive(Queryable,Debug)]
+#[derive(Queryable, Debug)]
 pub struct RulesProject {
     pub id: i32,
     pub key_id: Option<i32>,
     pub rule_id: Option<i32>,
 }
 
-#[derive(Queryable,Debug)]
+#[derive(Queryable, Debug)]
 pub struct RulesReplyTo {
     pub id: i32,
     pub key_id: Option<i32>,
     pub rule_id: Option<i32>,
 }
 
-#[derive(Queryable,Debug)]
+#[derive(Queryable, Debug)]
 pub struct RulesTo {
     pub id: i32,
     pub key_id: Option<i32>,
     pub rule_id: Option<i32>,
 }
 
-#[derive(Queryable,Debug)]
+#[derive(Queryable, Debug)]
 pub struct To {
     pub id: i32,
     pub value: Option<String>,
 }
-

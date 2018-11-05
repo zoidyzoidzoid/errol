@@ -36,18 +36,6 @@ table! {
 }
 
 table! {
-    github_pulls_fetches (id) {
-        github_repo_id -> Nullable<Int4>,
-        id -> Int4,
-        repo -> Varchar,
-        data -> Text,
-        created_at -> Nullable<Timestamp>,
-        updated_at -> Nullable<Timestamp>,
-        deleted_at -> Nullable<Timestamp>,
-    }
-}
-
-table! {
     github_pulls (id) {
         github_repo_id -> Nullable<Int4>,
         id -> Int4,
@@ -57,6 +45,18 @@ table! {
         body -> Text,
         labels -> Text,
         url -> Text,
+        data -> Text,
+        created_at -> Nullable<Timestamp>,
+        updated_at -> Nullable<Timestamp>,
+        deleted_at -> Nullable<Timestamp>,
+    }
+}
+
+table! {
+    github_pulls_fetches (id) {
+        github_repo_id -> Nullable<Int4>,
+        id -> Int4,
+        repo -> Varchar,
         data -> Text,
         created_at -> Nullable<Timestamp>,
         updated_at -> Nullable<Timestamp>,
@@ -158,8 +158,8 @@ table! {
 }
 
 joinable!(github_issues_fetches -> github_repos (github_repo_id));
-joinable!(github_pulls_fetches -> github_repos (github_repo_id));
 joinable!(github_pulls -> github_repos (github_repo_id));
+joinable!(github_pulls_fetches -> github_repos (github_repo_id));
 joinable!(rules_authors -> authors (key_id));
 joinable!(rules_authors -> rules (rule_id));
 joinable!(rules_branches -> branches (key_id));
@@ -178,8 +178,8 @@ allow_tables_to_appear_in_same_query!(
     branches,
     github_issues,
     github_issues_fetches,
-    github_pulls_fetches,
     github_pulls,
+    github_pulls_fetches,
     github_repos,
     paths,
     projects,
