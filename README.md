@@ -8,11 +8,11 @@
 
 [Gitlab Push Events](https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#push-events)
 
-[Diesel ORM](http://diesel.rs/guides/getting-started/)
-
 [Rust Project Layout](https://doc.rust-lang.org/cargo/reference/manifest.html#the-project-layout)
 
-[Rocket Web Framework](https://rocket.rs/)
+[Actix Web](https://actix.rs/docs/)
+
+[Diesel ORM](http://diesel.rs/guides/getting-started/)
 
 [Lettre: For Sending E-mails](https://github.com/lettre/lettre)
 
@@ -20,7 +20,11 @@
 
 [GitHub Rust Client](https://github.com/mgattozzi/github-rs)
 
-# WARNING: START
+[Caching in Actix state](https://snorre.io/shared-mutable-cache-in-actix-web/)
+
+[Tera Templating Library](https://tera.netlify.com/)
+
+## WARNING: START
 
 This project is very very pre-alpha, and very much a Work in Progress.
 It isn't in working state yet.
@@ -35,7 +39,7 @@ The TL;DR similar to the summary is that I want to build something like
 [Herald](herald) and [mention-bot](mention-bot), that works on GitHub
 and Gitlab.
 
-# WARNING: FIN
+## WARNING: FIN
 
 ## Summary
 
