@@ -17,23 +17,6 @@ use self::tera::compile_templates;
 use github::GitHubPushEvent;
 use gitlab::GitlabPush;
 
-// enum EventType {
-//     Issue,
-//     PullRequest,
-//     Push,
-//     Unsupported,
-// }
-
-// enum Provider {
-//     GitHub,
-//     Gitlab,
-// }
-
-// struct Event {
-//     provider: Provider,
-//     event_type: EventType,
-// }
-
 fn github_push(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, Error = Error>> {
     let content_type = req.headers().get(http::header::CONTENT_TYPE).unwrap().to_str().unwrap();
     if content_type != "application/json" {
@@ -48,10 +31,16 @@ fn github_push(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, E
         .to_str()
         .unwrap();
     match event_type {
-        // "issues" => {
-        // },
-        // "pull_request" => {
-        // },
+        "issues" => {
+            Box::new(future::err(error::ErrorBadRequest(
+                "Issues events not supported yet.",
+            )))
+        },
+        "pull_request" => {
+            Box::new(future::err(error::ErrorBadRequest(
+                "Pull Request events not supported yet.",
+            )))
+        },
         "push" => req
             .json()
             .from_err()
@@ -162,8 +151,7 @@ fn index(state: State<AppState>, query: Query<HashMap<String, String>>) -> Resul
 // }
 
 fn create_app() -> App<AppState> {
-    let tera =
-        compile_templates!(concat!(env!("CARGO_MANIFEST_DIR"), "/templates/**/*"));
+    let tera = compile_templates!(concat!(env!("CARGO_MANIFEST_DIR"), "/templates/**/*"));
 
     App::with_state(AppState{template: tera})
         .middleware(Logger::default())
@@ -176,16 +164,15 @@ pub fn launch_server() {
     std::env::set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
 
-
     let sys = actix::System::new("errol");
 
     let addr = "127.0.0.1:8080";
 
     server::new(|| {
-        create_app()
-    }).bind(addr)
-    .expect("Can not bind to port 8080")
-    .start();
+            create_app()
+        }).bind(addr)
+        .expect("Can not bind to port 8080")
+        .start();
 
     println!("Started http server: http://{}", addr);
     let _ = sys.run();
@@ -194,13 +181,10 @@ pub fn launch_server() {
 // #[cfg(test)]
 // #[macro_use]
 // extern crate quickcheck;
-// #[cfg(test)]
-// mod tests {
-//   quickcheck! {
-//       fn prop(xs: Vec<u32>) -> bool {
-//           xs == reverse(&reverse(&xs))
-//       }
-//   }
+// quickcheck! {
+//     fn prop(xs: Vec<u32>) -> bool {
+//         xs == reverse(&reverse(&xs))
+//     }
 // }
 
 #[cfg(test)]
