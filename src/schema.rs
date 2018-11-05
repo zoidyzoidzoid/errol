@@ -36,7 +36,7 @@ table! {
 }
 
 table! {
-    github_pull_fetches (id) {
+    github_pulls_fetches (id) {
         github_repo_id -> Nullable<Int4>,
         id -> Int4,
         repo -> Varchar,

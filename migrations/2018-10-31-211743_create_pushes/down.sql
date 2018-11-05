@@ -2,7 +2,7 @@
 
 DROP TABLE github_pulls;
 
-DROP TABLE github_pull_fetches;
+DROP TABLE github_pulls_fetches;
 
 DROP TABLE github_issues_fetches;
 

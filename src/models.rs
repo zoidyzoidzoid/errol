@@ -9,7 +9,8 @@ pub struct Author {
 }
 
 #[derive(Queryable,Debug)]
-pub struct Branche {
+#[table_name = "branches"]
+pub struct Branch {
     pub id: i32,
     pub value: Option<String>,
 }
@@ -25,6 +26,7 @@ pub struct GithubIssue {
 }
 
 #[derive(Queryable,Debug)]
+#[table_name = "github_issues_fetches"]
 pub struct GithubIssuesFetche {
     pub github_repo_id: Option<i32>,
     pub id: i32,
@@ -36,7 +38,8 @@ pub struct GithubIssuesFetche {
 }
 
 #[derive(Queryable,Debug)]
-pub struct GithubPullFetche {
+#[table_name = "github_pulls_fetches"]
+pub struct GithubPullsFetche {
     pub github_repo_id: Option<i32>,
     pub id: i32,
     pub repo: String,
@@ -103,7 +106,8 @@ pub struct RulesAuthor {
 }
 
 #[derive(Queryable,Debug)]
-pub struct RulesBranche {
+#[table_name = "rules_branches"]
+pub struct RulesBranch {
     pub id: i32,
     pub key_id: Option<i32>,
     pub rule_id: Option<i32>,

@@ -24,7 +24,7 @@ CREATE TABLE github_pulls (
   deleted_at TIMESTAMP
 );
 
-CREATE TABLE github_pull_fetches (
+CREATE TABLE github_pulls_fetches (
   github_repo_id INTEGER REFERENCES "github_repos" ("id") DEFERRABLE INITIALLY DEFERRED,
   id SERIAL PRIMARY KEY,
   repo VARCHAR NOT NULL,
