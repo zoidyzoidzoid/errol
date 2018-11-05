@@ -6,15 +6,11 @@ authors = [
 ]
 
 [dependencies]
-# cookie = ""
-# github-rs = ""
+actix = ""
 actix-web = ""
+chrono = ""
 diesel = { version = "", features = ["postgres"] }
 dotenv = ""
-# gitlab = ""
-# lettre = ""
-# lettre_email = ""
-# racer = ""
 serde = ""
 serde_derive = ""
 serde_json = ""
@@ -23,9 +19,19 @@ failure = ""
 futures = ""
 http = ""
 quickcheck = ""
-# reqwest = ""
 hubcaps = ""
 log = ""
 env_logger = ""
 tokio = ""
+tera = ""
+# cookie = ""
+# github-rs = ""
+# gitlab = ""
+# lettre = ""
+# lettre_email = ""
+# https://github.com/HeroicKatora/oxide-auth/issues/15
+# and https://github.com/briansmith/ring/pull/619
+# oxide-auth = { git = 'https://github.com/HeroicKatora/oxide-auth', branch = 'dev-v0.4.0' }
+# racer = ""
+# reqwest = ""
 # syntect = ""

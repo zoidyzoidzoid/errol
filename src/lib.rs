@@ -1,5 +1,7 @@
 #[macro_use]
 extern crate diesel;
+use diesel::*;
+use diesel::prelude::*;
 #[macro_use]
 extern crate serde_derive;
 
@@ -11,7 +13,6 @@ pub mod kitchensink;
 pub mod models;
 pub mod schema;
 
-#[allow(unused_imports)] use diesel::prelude::*;
 use dotenv::dotenv;
 use std::env;
 

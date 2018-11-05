@@ -158,7 +158,7 @@ table! {
 }
 
 joinable!(github_issues_fetches -> github_repos (github_repo_id));
-joinable!(github_pull_fetches -> github_repos (github_repo_id));
+joinable!(github_pulls_fetches -> github_repos (github_repo_id));
 joinable!(github_pulls -> github_repos (github_repo_id));
 joinable!(rules_authors -> authors (key_id));
 joinable!(rules_authors -> rules (rule_id));
@@ -178,7 +178,7 @@ allow_tables_to_appear_in_same_query!(
     branches,
     github_issues,
     github_issues_fetches,
-    github_pull_fetches,
+    github_pulls_fetches,
     github_pulls,
     github_repos,
     paths,

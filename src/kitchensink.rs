@@ -1,17 +1,18 @@
+use std::collections::HashMap;
+
+extern crate actix;
 extern crate actix_web;
-use self::actix_web::{error, server, App, Error, HttpRequest, HttpResponse};
-#[allow(unused_imports)]
-use self::actix_web::{AsyncResponder, HttpMessage};
-
 extern crate env_logger;
-use self::actix_web::middleware::Logger;
-
 extern crate futures;
-use self::futures::future;
-use self::futures::Future;
-
 extern crate serde;
 extern crate serde_json;
+extern crate tera;
+
+use self::actix_web::{error, http, server, App, Error, HttpRequest, HttpResponse, Query, State};
+#[allow(unused_imports)] use self::actix_web::{AsyncResponder, HttpMessage};
+use self::actix_web::middleware::Logger;
+use self::futures::{future, Future};
+use self::tera::compile_templates;
 
 use github::GitHubPushEvent;
 use gitlab::GitlabPush;
@@ -33,7 +34,7 @@ use gitlab::GitlabPush;
 //     event_type: EventType,
 // }
 
-fn github_push(req: &HttpRequest) -> Box<Future<Item = HttpResponse, Error = Error>> {
+fn github_push(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, Error = Error>> {
     let content_type = req.headers().get(http::header::CONTENT_TYPE).unwrap().to_str().unwrap();
     if content_type != "application/json" {
         return Box::new(future::err(error::ErrorBadRequest(
@@ -65,7 +66,7 @@ fn github_push(req: &HttpRequest) -> Box<Future<Item = HttpResponse, Error = Err
     }
 }
 
-fn gitlab_push(req: &HttpRequest) -> Box<Future<Item = HttpResponse, Error = Error>> {
+fn gitlab_push(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, Error = Error>> {
     let content_type = req.headers().get(http::header::CONTENT_TYPE).unwrap().to_str().unwrap();
     if content_type != "application/json" {
         return Box::new(future::err(error::ErrorBadRequest(
@@ -128,31 +129,62 @@ fn process_gitlab_push(push: GitlabPush) {
     }
 }
 
-fn index(req: &HttpRequest) -> HttpResponse {
-    if let Some(hdr) = req.headers().get(http::header::CONTENT_TYPE) {
-        if let Ok(_s) = hdr.to_str() {
-            return HttpResponse::Ok().into()
-        }
-     }
-    HttpResponse::BadRequest().into()
+struct AppState {
+    template: tera::Tera, // <- store tera template in application state
 }
+
+fn index(state: State<AppState>, query: Query<HashMap<String, String>>) -> Result<HttpResponse, Error> {
+    let s = if let Some(name) = query.get("name") {
+        // <- submitted form
+        let mut ctx = tera::Context::new();
+        ctx.insert("name", &name.to_owned());
+        ctx.insert("text", &"Welcome!".to_owned());
+        state
+            .template
+            .render("user.html", &ctx)
+            .map_err(|_| error::ErrorInternalServerError("Template error"))?
+    } else {
+        state
+            .template
+            .render("index.html", &tera::Context::new())
+            .map_err(|_| error::ErrorInternalServerError("Template error"))?
+    };
+    Ok(HttpResponse::Ok().content_type("text/html").body(s))
+}
+
+// fn index(req: &HttpRequest) -> HttpResponse {
+//     if let Some(hdr) = req.headers().get(http::header::CONTENT_TYPE) {
+//         if let Ok(_s) = hdr.to_str() {
+//             return HttpResponse::Ok().into()
+//         }
+//      }
+//     HttpResponse::BadRequest().into()
+// }
 
 pub fn launch_server() {
     std::env::set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
 
+
+    let sys = actix::System::new("errol");
+
     let addr = "127.0.0.1:8080";
-    println!("Starting Errol server on http://{}", addr);
 
     server::new(|| {
-        App::new()
+        let tera =
+            compile_templates!(concat!(env!("CARGO_MANIFEST_DIR"), "/templates/**/*"));
+
+        App::with_state(AppState{template: tera})
             .middleware(Logger::default())
-            .resource("/", |r| r.f(index))
+            .resource("/", |r| r.method(http::Method::GET).with(index))
             .resource("/api/v1/hooks/github", |r| r.f(github_push))
             .resource("/api/v1/hooks/gitlab", |r| r.f(gitlab_push))
     }).bind(addr)
     .expect("Can not bind to port 8080")
-    .run();
+    .start();
+
+    println!("Started http server: http://{}", addr);
+    let _ = sys.run();
 }
 
 // #[cfg(test)]
