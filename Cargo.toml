@@ -9,7 +9,7 @@ authors = [
 actix = ""
 actix-web = ""
 chrono = ""
-diesel = { version = "", features = ["postgres"] }
+diesel = { version = "", features = ["chrono", "postgres"] }
 dotenv = ""
 env_logger = ""
 failure = ""

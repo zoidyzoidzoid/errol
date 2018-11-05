@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate diesel;
 use diesel::*;
-use diesel::prelude::*;
+#[allow(unused_imports)] use diesel::prelude::*;
 #[macro_use]
 extern crate serde_derive;
 

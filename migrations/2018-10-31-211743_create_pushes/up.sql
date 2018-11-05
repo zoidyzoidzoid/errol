@@ -24,6 +24,21 @@ CREATE TABLE github_pulls (
   deleted_at TIMESTAMP
 );
 
+CREATE TABLE github_issues (
+  github_repo_id INTEGER REFERENCES "github_repos" ("id") DEFERRABLE INITIALLY DEFERRED,
+  id SERIAL PRIMARY KEY,
+  number INTEGER NOT NULL,
+  title VARCHAR NOT NULL,
+  body TEXT NOT NULL,
+  labels TEXT NOT NULL,
+  url TEXT NOT NULL,
+  data TEXT NOT NULL,
+  created_at TIMESTAMP,
+  updated_at TIMESTAMP,
+  deleted_at TIMESTAMP
+);
+
+
 CREATE TABLE github_pulls_fetches (
   github_repo_id INTEGER REFERENCES "github_repos" ("id") DEFERRABLE INITIALLY DEFERRED,
   id SERIAL PRIMARY KEY,
@@ -46,84 +61,15 @@ CREATE TABLE github_issues_fetches (
 
 CREATE TABLE rules (
   id INTEGER NOT NULL,
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  authors TEXT ARRAY,
+  branches TEXT ARRAY,
+  paths TEXT ARRAY,
+  projects TEXT ARRAY,
+  reply_to TEXT,
+  "to" TEXT ARRAY
 );
 
-CREATE TABLE paths (
-  id INTEGER NOT NULL,
-  value TEXT,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE rules_paths (
-  id INTEGER NOT NULL,
-  key_id INTEGER REFERENCES "paths" ("id") DEFERRABLE INITIALLY DEFERRED,
-  rule_id INTEGER REFERENCES "rules" ("id") DEFERRABLE INITIALLY DEFERRED,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE "to" (
-  id INTEGER NOT NULL,
-  value TEXT,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE rules_to (
-  id INTEGER NOT NULL,
-  key_id INTEGER REFERENCES "to" ("id") DEFERRABLE INITIALLY DEFERRED,
-  rule_id INTEGER REFERENCES "rules" ("id") DEFERRABLE INITIALLY DEFERRED,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE projects (
-  id INTEGER NOT NULL,
-  value TEXT,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE rules_projects (
-  id INTEGER NOT NULL,
-  key_id INTEGER REFERENCES "projects" ("id") DEFERRABLE INITIALLY DEFERRED,
-  rule_id INTEGER REFERENCES "rules" ("id") DEFERRABLE INITIALLY DEFERRED,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE authors (
-  id INTEGER NOT NULL,
-  value TEXT,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE rules_authors (
-  id INTEGER NOT NULL,
-  key_id INTEGER REFERENCES "authors" ("id") DEFERRABLE INITIALLY DEFERRED,
-  rule_id INTEGER REFERENCES "rules" ("id") DEFERRABLE INITIALLY DEFERRED,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE reply_to (
-  id INTEGER NOT NULL,
-  value TEXT,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE rules_reply_to (
-  id INTEGER NOT NULL,
-  key_id INTEGER REFERENCES "reply_to" ("id") DEFERRABLE INITIALLY DEFERRED,
-  rule_id INTEGER REFERENCES "rules" ("id") DEFERRABLE INITIALLY DEFERRED,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE branches (
-  id INTEGER NOT NULL,
-  value TEXT,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE rules_branches (
-  id INTEGER NOT NULL,
-  key_id INTEGER REFERENCES "branches" ("id") DEFERRABLE INITIALLY DEFERRED,
-  rule_id INTEGER REFERENCES "rules" ("id") DEFERRABLE INITIALLY DEFERRED,
-  PRIMARY KEY (id)
-);
-
+CREATE INDEX idx_rules_authors ON rules (authors);
+CREATE INDEX idx_rules_branches ON rules (branches);
+CREATE INDEX idx_rules_projects ON rules (projects);
