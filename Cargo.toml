@@ -32,7 +32,7 @@ tokio = ""
 # lettre_email = ""
 # https://github.com/HeroicKatora/oxide-auth/issues/15
 # and https://github.com/briansmith/ring/pull/619
-oxide-auth = { git = 'https://github.com/zoidbergwill/oxide-auth', branch = 'dev-v0.4.0' }
+oxide-auth = { git = 'https://github.com/HeroicKatora/oxide-auth', features = ["actix-frontend"], branch = 'dev-v0.4.0' }
 # racer = ""
 # reqwest = ""
 # syntect = ""
