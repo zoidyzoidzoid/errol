@@ -4,3 +4,4 @@
 /logfile
 /rust/target
 /target
+/.env
