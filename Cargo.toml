@@ -8,6 +8,7 @@ authors = [
 [dependencies]
 actix = ""
 actix-web = ""
+base64 = ""
 chrono = ""
 diesel = { version = "", features = ["chrono", "postgres"] }
 dotenv = ""
@@ -17,14 +18,16 @@ futures = ""
 http = ""
 hubcaps = ""
 log = ""
-oauth2 = ""
+oauth2 = "2.0.0-alpha.2"
 quickcheck = ""
+rand = ""
 serde = ""
 serde_derive = ""
 serde_json = ""
 serde_yaml = ""
 tera = ""
 tokio = ""
+url = ""
 # cookie = ""
 # github-rs = ""
 # gitlab = ""
@@ -32,7 +35,7 @@ tokio = ""
 # lettre_email = ""
 # https://github.com/HeroicKatora/oxide-auth/issues/15
 # and https://github.com/briansmith/ring/pull/619
-oxide-auth = { git = 'https://github.com/HeroicKatora/oxide-auth', features = ["actix-frontend"], branch = 'dev-v0.4.0' }
+# oxide-auth = { git = 'https://github.com/HeroicKatora/oxide-auth', features = ["actix-frontend"], branch = 'dev-v0.4.0' }
 # racer = ""
 # reqwest = ""
 # syntect = ""

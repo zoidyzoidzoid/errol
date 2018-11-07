@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 extern crate actix;
 extern crate actix_web;
+extern crate dotenv;
 extern crate env_logger;
 extern crate futures;
 extern crate serde;
@@ -13,6 +14,7 @@ use self::actix_web::{error, http, server, App, Error, HttpRequest, HttpResponse
 use self::actix_web::middleware::Logger;
 use self::futures::{future, Future};
 use self::tera::compile_templates;
+use self::dotenv::dotenv;
 
 use github::GitHubPushEvent;
 use gitlab::GitlabPush;
@@ -161,6 +163,7 @@ fn create_app() -> App<AppState> {
 }
 
 pub fn launch_server() {
+    dotenv().ok();
     std::env::set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
 

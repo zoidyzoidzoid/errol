@@ -7,6 +7,7 @@ extern crate serde_derive;
 
 extern crate dotenv;
 
+pub mod auth;
 pub mod github;
 pub mod gitlab;
 pub mod kitchensink;
