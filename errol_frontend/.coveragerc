@@ -1,0 +1,5 @@
+[run]
+include = errol_frontend/*
+omit = *migrations*, *tests*
+plugins =
+    django_coverage_plugin
