@@ -5,6 +5,7 @@ extern crate actix_web;
 extern crate dotenv;
 extern crate env_logger;
 extern crate futures;
+extern crate sentry;
 extern crate serde;
 extern crate serde_json;
 extern crate tera;
@@ -166,6 +167,8 @@ pub fn launch_server() {
     dotenv().ok();
     std::env::set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
+
+    let _guard = sentry::init("https://dd8228af920c4021a163fc65919f72cf@sentry.io/1318694");
 
     let sys = actix::System::new("errol");
 
