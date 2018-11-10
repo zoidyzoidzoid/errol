@@ -39,7 +39,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='postgres:///errol_frontend'),
+    'default': env.db('DATABASE_URL', default='postgres://@localhost/errol_frontend'),
+    'diesel': env.db('DIESEL_DATABASE_URL', default='postgres://@localhost/diesel_demo'),
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
@@ -68,9 +69,12 @@ THIRD_PARTY_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.gitlab',
 ]
 LOCAL_APPS = [
     'errol_frontend.users.apps.UsersAppConfig',
+    'errol_frontend.errol',
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -263,3 +267,43 @@ INSTALLED_APPS += ['compressor']
 STATICFILES_FINDERS += ['compressor.finders.CompressorFinder']
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+# census settings
+# https://github.com/census-instrumentation/opencensus-python#django
+INSTALLED_APPS.append('opencensus.trace.ext.django')
+MIDDLEWARE = ['opencensus.trace.ext.django.middleware.OpencensusMiddleware', ] + MIDDLEWARE
+# MIDDLEWARE = ['tracing.CensusDBMiddleware', ] + MIDDLEWARE
+
+OPENCENSUS_TRACE = {
+    'SAMPLER': 'opencensus.trace.samplers.probability.ProbabilitySampler',
+    'EXPORTER': 'opencensus.trace.exporters.zipkin_exporter.ZipkinExporter',
+    'PROPAGATOR': 'opencensus.trace.propagation.trace_context_http_header_format.TraceContextPropagator',
+}
+
+OPENCENSUS_TRACE_PARAMS = {
+    'BLACKLIST_PATHS': ['/_ah/health'],
+    'SAMPLING_RATE': 1.0,
+    'SERVICE_NAME': 'errol_frontend',
+    'ZIPKIN_EXPORTER_HOST_NAME': 'localhost',
+    'ZIPKIN_EXPORTER_PORT': 9411,
+    'ZIPKIN_EXPORTER_PROTOCOL': 'http',
+    'TRANSPORT': 'opencensus.trace.exporters.transports.background_thread.BackgroundThreadTransport',
+}
+
+from opencensus.trace import config_integration
+config_integration.trace_integrations(['requests'])
+
+
+# allauth additional settings
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'SCOPE': [
+            'read:user',
+            'read:repo_hook',
+            'read:org',
+        ],
+    },
+    'gitlab': {
+        'SCOPE': ['read_user'],
+    },
+}
