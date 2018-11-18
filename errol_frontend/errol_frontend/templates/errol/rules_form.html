@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ rule.rulename }}{% endblock %}
+
+{% block content %}
+  <h1>{{ rule.rulename }}</h1>
+  <form class="form-horizontal" method="post" action="{% if form.instance.pk %}{% url 'rules:update' form.instance.pk %}{% else %}{% url 'rules:create' %}{% endif %}">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="control-group">
+      <div class="controls">
+        <button type="submit" class="btn btn-success">
+          {% if form.instance.pk %}
+            Update
+          {% else %}
+            Create
+          {% endif %}
+        </button>
+      </div>
+    </div>
+  </form>
+{% endblock %}

@@ -69,12 +69,13 @@ table! {
 table! {
     rules (id) {
         id -> Int4,
+        name -> Text,
         authors -> Nullable<Array<Text>>,
         branches -> Nullable<Array<Text>>,
         paths -> Nullable<Array<Text>>,
         projects -> Nullable<Array<Text>>,
         reply_to -> Nullable<Text>,
-        to -> Nullable<Array<Text>>,
+        to -> Array<Text>,
     }
 }
 

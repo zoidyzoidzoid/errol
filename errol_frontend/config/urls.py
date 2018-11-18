@@ -20,6 +20,7 @@ urlpatterns = [
         include("errol_frontend.users.urls", namespace="users"),
     ),
     path("accounts/", include("allauth.urls")),
+    path("ui/", include("errol_frontend.errol.urls", namespace="rules")),
     # Your stuff: custom urls includes go here
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static i18n %}
+{% block title %}Members{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2>Rules</h2>
+
+  {% if rules_list %}
+      <div class="list-group">
+        {% for rule in rules_list %}
+          <a href="{% url 'rules:detail' rule.pk %}" class="list-group-item">
+            <h4 class="list-group-item-heading">{{ rule.name }}</h4>
+          </a>
+        {% endfor %}
+      </div>
+  {% else %}
+      <p>
+        You don't seem to have any rules yet.
+        <a href="{% url 'rules:create' %}" class="btn btn-success">
+          Create
+        </a>
+      </p>
+  {% endif %}
+</div>
+{% endblock content %}

@@ -60,14 +60,14 @@ CREATE TABLE github_issues_fetches (
 );
 
 CREATE TABLE rules (
-  id INTEGER NOT NULL,
-  PRIMARY KEY (id),
+  id SERIAL PRIMARY KEY NOT NULL,
+  name TEXT NOT NULL,
   authors TEXT ARRAY,
   branches TEXT ARRAY,
   paths TEXT ARRAY,
   projects TEXT ARRAY,
   reply_to TEXT,
-  "to" TEXT ARRAY
+  "to" TEXT ARRAY NOT NULL
 );
 
 CREATE INDEX idx_rules_authors ON rules (authors);
