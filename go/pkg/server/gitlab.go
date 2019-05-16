@@ -127,7 +127,7 @@ type GitlabHandler struct {
 func (f GitlabHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var err error
 	if req.Header[GitlabEventHeader] == nil || req.Header[GitlabEventHeader][0] != GitlabEventHookPushValue {
-		fmt.Printf("Invalid event received on Gitlab endpoint")
+		fmt.Printf("Invalid event received on Gitlab endpoint\n")
 		_, err := fmt.Fprintf(w, "Invalid Gitlab push!")
 		if err != nil {
 			log.Print("Error writing response")

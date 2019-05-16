@@ -166,7 +166,7 @@ type GitHubSender struct {
 }
 
 func handleGitHubEvent(push GitHubPushEvent) {
-	fmt.Printf("Received push: %s %s...%s", push.BaseRef, push.Before, push.After)
+	fmt.Printf("Received push: %s %s...%s\n", push.BaseRef, push.Before, push.After)
 	for _, commit := range push.Commits {
 		_, err := fmt.Printf("%s: %s\n", commit.ID, strings.Split(commit.Message, "\n")[0])
 		if err != nil {
@@ -201,9 +201,9 @@ type GitHubHandler struct {
 
 func (f GitHubHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var err error
-	fmt.Printf("%+v", req.Header)
+	fmt.Printf("%+v\n", req.Header)
 	if req.Header[GitHubEventHeader] == nil || req.Header[GitHubEventHeader][0] != GitHubEventHookPushValue {
-		fmt.Printf("Invalid event received on GitHub endpoint")
+		fmt.Printf("Invalid event received on GitHub endpoint\n")
 		_, err = fmt.Fprintf(w, "Invalid GitHub push")
 		if err != nil {
 			log.Print("Error writing response")
